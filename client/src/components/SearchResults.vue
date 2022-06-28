@@ -16,7 +16,7 @@
     <v-row v-for="(result, keyword) in results" :key="keyword">
       <v-col cols="4">
         <div class="img-container mx-2">
-          <h1 class="text-center text-decoration-underline">{{keyword}}</h1>
+          <h1 class="text-center">{{keyword}}</h1>
         </div>
       </v-col>
       <v-col cols="8">
@@ -29,8 +29,7 @@
           <p class="d-none"></p>
           <div v-if="Object.keys(result).length">
             <div v-for="(value, key) in result" :key="key" class="ml-4 my-2">
-              <h3 class="d-inline">{{ key.replace(/([A-Z])/g, ' $1')
-                  .replace(/^[-_]*(.)/, str => str.toUpperCase()) }}: </h3>
+              <h3 class="d-inline">{{ key }}: </h3>
               <span>{{ value }}</span>
             </div>
           </div>
