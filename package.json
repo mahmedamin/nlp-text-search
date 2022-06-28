@@ -1,0 +1,49 @@
+{
+  "name": "ui",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "postinstall": "npm run build",
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js"
+  },
+  "dependencies": {
+    "@google-cloud/vision": "^2.4.0",
+    "axios": "^0.23.0",
+    "concurrently": "^6.3.0",
+    "core-js": "^3.6.5",
+    "cors": "^2.8.5",
+    "cropperjs": "^1.5.12",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "http-proxy": "0.10.3",
+    "jszip": "^3.7.1",
+    "lodash": "^4.17.21",
+    "request": "2.31.0",
+    "serve-static": "^1.14.1",
+    "vue": "^2.6.11",
+    "vuetify": "^2.4.0",
+    "vuex": "^3.6.2",
+    "xlsx": "^0.18.2"
+  },
+  "devDependencies": {
+    "@mdi/font": "^6.4.95",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "babel-eslint": "^10.1.0",
+    "font-awesome": "^4.7.0",
+    "sass": "~1.32.0",
+    "sass-loader": "^10.0.0",
+    "vue-cli-plugin-vuetify": "~2.4.3",
+    "vue-template-compiler": "^2.6.11",
+    "vuetify-loader": "^1.7.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
