@@ -13,7 +13,7 @@
     </v-col>
   </v-row>
   <div v-else class="mt-4">
-    <v-row v-for="(result, keyword) in results">
+    <v-row v-for="(result, keyword) in results" :key="keyword">
       <v-col cols="4">
         <div class="img-container mx-2">
           <h1 class="text-center text-decoration-underline">{{keyword}}</h1>
@@ -26,11 +26,15 @@
             max-width="1100"
             style="overflow: hidden"
         >
-          <div v-for="(value, key) in result" :key="attribute" class="ml-4 my-2">
-            <h3 class="d-inline">{{ key.replace(/([A-Z])/g, ' $1')
-                .replace(/^./, str => str.toUpperCase()) }}: </h3>
+          <p class="d-none"></p>
+          <div v-if="Object.keys(result).length">
+            <div v-for="(value, key) in result" :key="key" class="ml-4 my-2">
+              <h3 class="d-inline">{{ key.replace(/([A-Z])/g, ' $1')
+                  .replace(/^[-_]*(.)/, str => str.toUpperCase()) }}: </h3>
               <span>{{ value }}</span>
+            </div>
           </div>
+          <h3 v-else class="py-2 px-2">Result not found...</h3>
         </v-sheet>
       </v-col>
     </v-row>

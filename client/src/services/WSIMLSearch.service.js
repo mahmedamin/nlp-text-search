@@ -95,7 +95,10 @@ export default {
         data: body,
       });
     } catch (e) {
-      console.log(e);
+      return {
+        error: true,
+        message: "Something went wrong!"
+      };
     }
     return res.data;
   },

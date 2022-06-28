@@ -96,15 +96,23 @@ export default {
       this.errorDetail = "";
     },
     async onClickSearch() {
+      this.resultsData = {};
       if (!this.searchKeyword)
         return false;
 
       this.isLoading = true;
 
       const results = await WSIMLSearchService.getNlpResults(this.searchKeyword);
+      this.isLoading = false;
+
+      if (results.error) {
+        this.isError = true;
+        this.errorDetail = results.message;
+        return;
+      }
+
       this.resultsData[this.searchKeyword] = results;
 
-      this.isLoading = false;
     },
   },
 };
