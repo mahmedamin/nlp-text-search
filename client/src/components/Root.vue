@@ -14,6 +14,16 @@
               src="https://assets.wsimgs.com/wsimgs/rk/images/i/202143/0006/images/common/logo.svg"
             />
           </v-col>
+          <v-col cols="4" class="mt-5">
+            <v-radio-group class="float-right" row v-model="radioGrp">
+              <v-radio
+                  v-for="btn in radioButtons"
+                  :key="btn.value"
+                  :label="btn.label"
+                  :value="btn.value"
+              ></v-radio>
+            </v-radio-group>
+          </v-col>
           <v-col cols="5" class="mt-5">
             <v-btn
               @click="onClickSearch()"
@@ -26,6 +36,7 @@
             </v-btn>
 
             <v-text-field
+              v-if="radioGrp === 'searchKeyword'"
               v-model="searchKeyword"
               required
               placeholder="Enter search keyword"
@@ -33,6 +44,16 @@
               label="Search keyword"
               clearable
             ></v-text-field>
+            <v-file-input
+                v-if="radioGrp === 'fileUpload'"
+                v-model="xlsxFile"
+                required
+                :multiple="false"
+                accept="text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,	application/csv"
+                placeholder="Select an Excel File"
+                prepend-icon="mdi-file-excel-box"
+                label="Excel File"
+            ></v-file-input>
           </v-col>
         </v-row>
       </v-form>
@@ -54,8 +75,8 @@
 <script>
 import WSIMLSearchService from "../services/WSIMLSearch.service";
 import {
+  parseExcel
 } from "../utils/utils";
-import { BRANDS, TAB_STATUSES } from "../constants/constants";
 
 import { mapMutations, mapGetters } from "vuex";
 import SearchResults from "./SearchResults";
@@ -71,13 +92,13 @@ export default {
   data() {
     return {
       searchKeyword: null,
+      xlsxFile: null,
+      radioButtons: [
+        { value: "searchKeyword", label: "Text Search" },
+        { value: "fileUpload", label: "File Upload" },
+      ],
+      radioGrp: "searchKeyword",
       resultsData: {},
-      filters: {
-        priceRange: {
-          min: null,
-          max: null,
-        },
-      },
       isLoading: false,
       isError: false,
       errorDetail: "",
@@ -97,22 +118,46 @@ export default {
     },
     async onClickSearch() {
       this.resultsData = {};
-      if (!this.searchKeyword)
-        return false;
-
       this.isLoading = true;
+      let keywords = [];
 
-      const results = await WSIMLSearchService.getNlpResults(this.searchKeyword);
-      this.isLoading = false;
+      switch (this.radioGrp) {
+        case 'searchKeyword':
+          if (!this.searchKeyword)
+            return false;
 
-      if (results.error) {
-        this.isError = true;
-        this.errorDetail = results.message;
-        return;
+          keywords.push(this.searchKeyword);
+          break;
+        case 'fileUpload':
+          let excelData = JSON.parse(await parseExcel(this.xlsxFile));
+          if (!excelData.length)
+            return false;
+
+          let firstKeyword;
+          excelData.forEach((object, key) => {
+            if (0 === key) {
+              firstKeyword = Object.keys(object)[0];
+              keywords.push(firstKeyword);
+            }
+
+            keywords.push(object[firstKeyword]);
+          });
+          break;
       }
 
-      this.resultsData[this.searchKeyword] = results;
+      for (const keyword of keywords) {
+        const results = await WSIMLSearchService.getNlpResults(this.searchKeyword);
+        if (results.error) {
+          this.isLoading = false;
+          this.isError = true;
+          this.errorDetail = results.message;
+          return;
+        }
 
+        this.resultsData[keyword] = results;
+      }
+
+      this.isLoading = false;
     },
   },
 };
