@@ -144,9 +144,8 @@ export default {
           });
           break;
       }
-
       for (const keyword of keywords) {
-        const results = await WSIMLSearchService.getNlpResults(this.searchKeyword);
+        const results = await WSIMLSearchService.getNlpResults(keyword);
         if (results.error) {
           this.isLoading = false;
           this.isError = true;
